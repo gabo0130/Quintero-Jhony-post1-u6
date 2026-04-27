@@ -1,31 +1,64 @@
 # Refactoring Lab - Gestor de Biblioteca
 
-Proyecto de laboratorio orientado a identificar y refactorizar anti-patrones de diseno.  
-La implementacion actual centraliza varias responsabilidades en una sola clase (`GestorBiblioteca`), lo que permite analizar el problema y proponer mejoras de separacion de responsabilidades.
+Proyecto academico para identificar un antipatron de diseno y aplicar una refactorizacion guiada por el principio SRP.
 
-## Objetivo del laboratorio
+## Antipatron identificado
 
-- Detectar el anti-patron **God Object** en un caso practico.
-- Identificar responsabilidades de negocio mezcladas en una unica clase.
-- Establecer una base para aplicar refactorings hacia una arquitectura mas mantenible.
+El sistema presentaba el antipatron **God Object**, concentrado en la clase `GestorBiblioteca`. Esta clase reunia demasiada logica de negocio y tambien administraba el estado de distintos dominios usando arreglos de `String[]`.
 
-## Responsabilidades identificadas
+Esto provocaba varios problemas:
 
-- **Responsabilidad 1: Gestion del catalogo de libros** (agregar, buscar, listar)
-- **Responsabilidad 2: Gestion de socios** (registrar, validar, buscar)
-- **Responsabilidad 3: Gestion de prestamos** (prestar, devolver)
-- **Responsabilidad 4: Generacion de reportes del sistema**
+- Alto acoplamiento entre catalogo, socios, prestamos y reportes.
+- Baja cohesion, porque una sola clase cambiaba por muchas razones distintas.
+- Mayor dificultad para probar, mantener y extender el sistema.
+- Mas riesgo de errores al mezclar reglas de negocio de areas diferentes.
 
-## Estructura del proyecto
+## Responsabilidades encontradas
+
+- **Responsabilidad 1:** Gestion del catalogo de libros (`agregar`, `buscar`, `listar`)
+- **Responsabilidad 2:** Gestion de socios (`registrar`, `validar`, `buscar`)
+- **Responsabilidad 3:** Gestion de prestamos (`prestar`, `devolver`)
+- **Responsabilidad 4:** Generacion de reportes del sistema
+
+## Patron aplicado
+
+Se aplico el principio **SRP (Single Responsibility Principle)** para dividir la clase `GestorBiblioteca` en componentes con una unica responsabilidad:
+
+- `CatalogoLibros`: administra el catalogo y la disponibilidad de libros.
+- `RegistroSocios`: registra y valida socios.
+- `ServicioPrestamos`: coordina prestamos y devoluciones.
+- `GeneradorReportes`: construye el reporte general del sistema.
+- `Libro` y `Socio`: representan las entidades del dominio.
+
+Con esta separacion, cada clase tiene un motivo de cambio bien definido y el codigo queda mas claro, mantenible y reutilizable.
+
+## Estructura despues de la refactorizacion
 
 ```text
 src/main/java/com/universidad/antipatrones/refactoring_lab/
 |- GestorBiblioteca.java
+|- CatalogoLibros.java
+|- RegistroSocios.java
+|- ServicioPrestamos.java
+|- GeneradorReportes.java
+|- Libro.java
+|- Socio.java
 |- RefactoringLabApplication.java
 ```
 
-- `GestorBiblioteca`: clase principal del laboratorio con logica de catalogo, socios, prestamos y reportes.
-- `RefactoringLabApplication`: punto de entrada de Spring Boot y ejecucion del flujo de ejemplo.
+## Ejecucion antes y despues
+
+### Antes de la refactorizacion
+
+La ejecucion inicial dependia de `GestorBiblioteca` como objeto central que resolvia todo el flujo del sistema.
+
+![Ejecucion antes de la refactorizacion](docs/images/ejecucion-antes.png)
+
+### Despues de la refactorizacion
+
+La misma funcionalidad se conserva, pero ahora el flujo se distribuye entre clases especializadas siguiendo SRP.
+
+![Ejecucion despues de la refactorizacion](docs/images/ejecucion-despues.png)
 
 ## Tecnologias
 
@@ -35,31 +68,18 @@ src/main/java/com/universidad/antipatrones/refactoring_lab/
 
 ## Como ejecutar
 
-### Opcion 1: Windows (PowerShell)
+### Windows PowerShell
 
 ```powershell
 .\mvnw.cmd spring-boot:run
 ```
 
-### Opcion 2: Compilar y ejecutar pruebas
+### Ejecutar pruebas
 
-```bash
-./mvnw clean test
+```powershell
+.\mvnw.cmd test
 ```
 
-## Flujo de ejemplo actual
+## Nota
 
-Al iniciar la aplicacion se ejecuta un escenario de demostracion:
-
-1. Registro de libros.
-2. Registro de socio.
-3. Prestamo de libro.
-4. Impresion de reporte.
-5. Devolucion de libro.
-6. Nueva impresion de reporte.
-
-## Notas del laboratorio
-
-- Este proyecto esta disenado con proposito academico para practicar refactorizacion.
-- La clase `GestorBiblioteca` mantiene datos en memoria usando arreglos de `String[]`, intencionalmente simple para enfocar el ejercicio en diseno.
-- No hay persistencia a base de datos en esta version.
+Las capturas del README muestran la salida relevante del flujo de ejecucion antes y despues de la refactorizacion, enfocadas en el comportamiento observable del sistema.
