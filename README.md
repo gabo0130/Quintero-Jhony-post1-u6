@@ -52,13 +52,13 @@ src/main/java/com/universidad/antipatrones/refactoring_lab/
 
 La ejecucion inicial dependia de `GestorBiblioteca` como objeto central que resolvia todo el flujo del sistema.
 
-![Ejecucion antes de la refactorizacion](docs/images/ejecucion-antes.png)
+![Ejecucion antes de la refactorizacion](refactoring-lab/docs/images/ejecucion-antes.png)
 
 ### Despues de la refactorizacion
 
 La misma funcionalidad se conserva, pero ahora el flujo se distribuye entre clases especializadas siguiendo SRP.
 
-![Ejecucion despues de la refactorizacion](docs/images/ejecucion-despues.png)
+![Ejecucion despues de la refactorizacion](refactoring-lab/docs/images/ejecucion-despues.png)
 
 ## Tecnologias
 
